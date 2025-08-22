@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../config/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
@@ -12,9 +15,38 @@ const RegisterPage = () => {
 
     const navigate = useNavigate();
 
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            // 1. Create user in Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            const user = userCredential.user;
+
+            // 2. Save extra user details in Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                name,
+                email,
+                role,
+                department: role === "teacher" ? department : "",
+                subject: role === "teacher" ? subject : "",
+            });
+
+            // 3. Redirect based on role
+            if (role === "student") navigate("/student");
+            else if (role === "teacher") navigate("/teacher");
+            else navigate("/"); // admins are usually created manually
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
     return (
         <div>
-            <form>
+            <form onSubmit={handleRegister}>
                 <h2>Register</h2>
                 {error && <p>{error}</p>}
                 <input
