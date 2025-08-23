@@ -91,48 +91,66 @@ const BookAppointmentPage = () => {
     };
 
     return (
-        <div>
-            <h2>Book new Appointment</h2>
-            <form onSubmit={handleSubmit}>
-                <select
-                    value={selectedTeacher}
-                    onChange={(e) => setSelectedTeacher(e.target.value)}
-                    required
-                >
-                    <option value="">--Select Teacher--</option>
-                    {teachers.map((teacher) => {
-                        return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                    Book New Appointment
+                </h2>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Teacher Dropdown */}
+                    <select
+                        value={selectedTeacher}
+                        onChange={(e) => setSelectedTeacher(e.target.value)}
+                        required
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    >
+                        <option value="">-- Select Teacher --</option>
+                        {teachers.map((teacher) => (
                             <option key={teacher.id} value={teacher.id}>
                                 {teacher.name} ({teacher.department} -{" "}
                                 {teacher.subject})
                             </option>
-                        );
-                    })}
-                </select>
-
-                {selectedTeacher && (
-                    <select
-                        value={selectedSlot}
-                        onChange={(e) => setSelectedSlot(e.target.value)}
-                        required
-                    >
-                        <option value="">--Select Available Slot</option>
-                        {slots.map((slot) => (
-                            <option key={slot.id} value={slot.id}>
-                                {slot.date} {slot.time}
-                            </option>
                         ))}
                     </select>
-                )}
 
-                <textarea
-                    placeholder="Message (optional)"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                />
+                    {/* Slot Dropdown */}
+                    {selectedTeacher && (
+                        <select
+                            value={selectedSlot}
+                            onChange={(e) => setSelectedSlot(e.target.value)}
+                            required
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        >
+                            <option value="">
+                                -- Select Available Slot --
+                            </option>
+                            {slots.map((slot) => (
+                                <option key={slot.id} value={slot.id}>
+                                    {slot.date} {slot.time}
+                                </option>
+                            ))}
+                        </select>
+                    )}
 
-                <button type="submit">Confirm Booking</button>
-            </form>
+                    {/* Message */}
+                    <textarea
+                        placeholder="Message (optional)"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                        rows="3"
+                    />
+
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-medium"
+                    >
+                        Confirm Booking
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

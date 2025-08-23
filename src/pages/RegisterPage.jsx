@@ -46,63 +46,86 @@ const RegisterPage = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={handleRegister}>
-                <h2>Register</h2>
-                {error && <p>{error}</p>}
-                <input
-                    type="text"
-                    placeholder="Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
+        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+                    Register
+                </h2>
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-
-                {/* Role */}
-
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
-                </select>
-
-                {role == "teacher" && (
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Department"
-                            value={department}
-                            onChange={(e) => setDepartment(e.target.value)}
-                            required
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="Subject"
-                            value={subject}
-                            onChange={(e) => setSubject(e.target.value)}
-                            required
-                        />
-                    </div>
+                {error && (
+                    <p className="text-red-500 text-center mb-4 font-medium">
+                        {error}
+                    </p>
                 )}
 
-                <button type="submit">Register</button>
-            </form>
+                <form onSubmit={handleRegister} className="space-y-4">
+                    <input
+                        type="text"
+                        placeholder="Full Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+
+                    {/* Role */}
+                    <select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    >
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                    </select>
+
+                    {role === "teacher" && (
+                        <div className="space-y-3">
+                            <input
+                                type="text"
+                                placeholder="Department"
+                                value={department}
+                                onChange={(e) => setDepartment(e.target.value)}
+                                required
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            />
+
+                            <input
+                                type="text"
+                                placeholder="Subject"
+                                value={subject}
+                                onChange={(e) => setSubject(e.target.value)}
+                                required
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            />
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+                    >
+                        Register
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

@@ -139,75 +139,157 @@ const TeacherDashboard = () => {
         }
     };
     return (
-        <div>
-            <h2>Teacher Dashboard</h2>
-            <LogoutButton />
+        <div className="min-h-screen bg-gray-100 p-6">
+            <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-bold text-gray-800">
+                        Teacher Dashboard
+                    </h2>
+                    <LogoutButton />
+                </div>
 
-            <h3>Schedule Availability</h3>
-            <form onSubmit={handleAddSlot}>
-                <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    required
-                />
-                <input
-                    type="time"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    required
-                />
-                <button type="submit">Add Slot</button>
-            </form>
+                {/* Schedule Availability */}
+                <div className="mb-8">
+                    <h3 className="text-xl font-semibold text-gray-700 mb-3">
+                        Schedule Availability
+                    </h3>
+                    <form
+                        onSubmit={handleAddSlot}
+                        className="flex flex-col sm:flex-row gap-4"
+                    >
+                        <input
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            required
+                            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        />
+                        <input
+                            type="time"
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}
+                            required
+                            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        />
+                        <button
+                            type="submit"
+                            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-medium"
+                        >
+                            Add Slot
+                        </button>
+                    </form>
+                </div>
 
-            <h3>Your Available Slots</h3>
-            <ul>
-                {slots.length === 0 ? (
-                    <li>No slots scheduled yet.</li>
-                ) : (
-                    slots.map((slot) => (
-                        <li key={slot.id}>
-                            {slot.date} {slot.time} →{" "}
-                            {slot.available ? "Available" : "Booked"}
-                        </li>
-                    ))
-                )}
-            </ul>
-
-            <h3>Appointsments</h3>
-            <ul>
-                {appointments.length === 0 ? (
-                    <li>No appointments yet.</li>
-                ) : (
-                    appointments.map((appt) => (
-                        <li key={appt.id}>
-                            <strong>Student:</strong>{" "}
-                            {appt.student?.name || appt.studentId} <br />
-                            <strong>Date:</strong> {appt.date} <br />
-                            <strong>Time:</strong> {appt.time} <br />
-                            <strong>Message:</strong>{" "}
-                            {appt.message || "No message"} <br />
-                            <strong>Status:</strong> {appt.status} <br />
-                            {appt.status === "pending" && (
-                                <div>
-                                    <button
-                                        onClick={() => handleApprove(appt.id)}
+                {/* Slots */}
+                <div className="mb-8">
+                    <h3 className="text-xl font-semibold text-gray-700 mb-3">
+                        Your Available Slots
+                    </h3>
+                    <ul className="space-y-2">
+                        {slots.length === 0 ? (
+                            <li className="text-gray-500">
+                                No slots scheduled yet.
+                            </li>
+                        ) : (
+                            slots.map((slot) => (
+                                <li
+                                    key={slot.id}
+                                    className="p-3 border rounded-lg flex justify-between items-center"
+                                >
+                                    <span>
+                                        {slot.date} {slot.time}
+                                    </span>
+                                    <span
+                                        className={`px-3 py-1 text-sm font-medium rounded-full ${
+                                            slot.available
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-red-100 text-red-700"
+                                        }`}
                                     >
-                                        Approve
-                                    </button>
-                                    <button
-                                        onClick={() =>
-                                            handleCancel(appt.id, appt.slotId)
-                                        }
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            )}
-                        </li>
-                    ))
-                )}
-            </ul>
+                                        {slot.available
+                                            ? "Available"
+                                            : "Booked"}
+                                    </span>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
+
+                {/* Appointments */}
+                <div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-3">
+                        Appointments
+                    </h3>
+                    <ul className="space-y-4">
+                        {appointments.length === 0 ? (
+                            <li className="text-gray-500">
+                                No appointments yet.
+                            </li>
+                        ) : (
+                            appointments.map((appt) => (
+                                <li
+                                    key={appt.id}
+                                    className="p-4 border rounded-lg bg-gray-50"
+                                >
+                                    <p>
+                                        <strong>Student:</strong>{" "}
+                                        {appt.student?.name || appt.studentId}
+                                    </p>
+                                    <p>
+                                        <strong>Date:</strong> {appt.date}
+                                    </p>
+                                    <p>
+                                        <strong>Time:</strong> {appt.time}
+                                    </p>
+                                    <p>
+                                        <strong>Message:</strong>{" "}
+                                        {appt.message || "No message"}
+                                    </p>
+                                    <p>
+                                        <strong>Status:</strong>{" "}
+                                        <span
+                                            className={`font-medium ${
+                                                appt.status === "pending"
+                                                    ? "text-yellow-600"
+                                                    : appt.status === "approved"
+                                                    ? "text-green-600"
+                                                    : "text-red-600"
+                                            }`}
+                                        >
+                                            {appt.status}
+                                        </span>
+                                    </p>
+
+                                    {appt.status === "pending" && (
+                                        <div className="flex gap-3 mt-3">
+                                            <button
+                                                onClick={() =>
+                                                    handleApprove(appt.id)
+                                                }
+                                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                                            >
+                                                Approve
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    handleCancel(
+                                                        appt.id,
+                                                        appt.slotId
+                                                    )
+                                                }
+                                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    )}
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };
