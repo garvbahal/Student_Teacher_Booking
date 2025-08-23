@@ -44,6 +44,21 @@ const StudentDashboard = () => {
                         apptData.teacher = teacherSnap.docs[0].data();
                     }
 
+                    // 🔹 fetch slot info (date + time)
+                    if (apptData.slotId) {
+                        const slotSnap = await getDocs(
+                            query(
+                                collection(db, "slots"),
+                                where("__name__", "==", apptData.slotId)
+                            )
+                        );
+                        if (!slotSnap.empty) {
+                            const slot = slotSnap.docs[0].data();
+                            apptData.date = slot.date;
+                            apptData.time = slot.time;
+                        }
+                    }
+
                     apptList.push(apptData);
                 }
 
