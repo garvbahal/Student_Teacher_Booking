@@ -10,13 +10,13 @@ import {
     serverTimestamp,
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { NavLink } from "react-router-dom";
 
 const StudentDashboard = () => {
     const [user] = useAuthState(auth);
     const [appointments, setAppointments] = useState([]);
     const [dataLoading, setDataLoading] = useState(true);
 
-    // 🔹 Fetch Student Appointments from Firestore
     useEffect(() => {
         const fetchAppointments = async () => {
             if (!user) return;
@@ -27,10 +27,26 @@ const StudentDashboard = () => {
                     where("studentId", "==", user.uid)
                 );
                 const snapshot = await getDocs(q);
-                const apptList = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                const apptList = [];
+
+                for (const docSnap of snapshot.docs) {
+                    const apptData = { id: docSnap.id, ...docSnap.data() };
+
+                    // fetch teacher info
+                    const teacherSnap = await getDocs(
+                        query(
+                            collection(db, "users"),
+                            where("uid", "==", apptData.teacherId)
+                        )
+                    );
+
+                    if (!teacherSnap.empty) {
+                        apptData.teacher = teacherSnap.docs[0].data();
+                    }
+
+                    apptList.push(apptData);
+                }
+
                 setAppointments(apptList);
             } catch (err) {
                 console.error("Error fetching appointments:", err);
@@ -52,18 +68,16 @@ const StudentDashboard = () => {
 
             <h3>Your Appointments</h3>
             <ul>
-                {appointments.map((appt) => {
-                    const teacher = teacher.find(
-                        (t) => t.id === appt.teacherId
-                    );
-                    return (
-                        <li key={appt.id}>
-                            With : {teacher.name} | {appt.date} {appt.time} |{" "}
-                            Status : {appt.status}
-                        </li>
-                    );
-                })}
+                {appointments.map((appt) => (
+                    <li key={appt.id}>
+                        With : {appt.teacher?.name || "Unknown Teacher"} |{" "}
+                        {appt.date} {appt.time} | Status : {appt.status}
+                    </li>
+                ))}
             </ul>
+            <NavLink to="/student/book">
+                <button>Book Appointment</button>
+            </NavLink>
         </div>
     );
 };

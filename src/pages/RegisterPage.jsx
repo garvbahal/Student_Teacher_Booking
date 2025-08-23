@@ -28,6 +28,7 @@ const RegisterPage = () => {
 
             // 2. Save extra user details in Firestore
             await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
                 name,
                 email,
                 role,
