@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import { doc, setDoc } from "firebase/firestore";
+import SpinnerLogin from "../components/SpinnerLogin";
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
@@ -12,10 +13,12 @@ const RegisterPage = () => {
     const [department, setDepartment] = useState("");
     const [subject, setSubject] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
+        setLoading(true);
         e.preventDefault();
         try {
             // 1. Create user in Firebase Auth
@@ -42,6 +45,8 @@ const RegisterPage = () => {
             else navigate("/"); // admins are usually created manually
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(true);
         }
     };
 
@@ -122,7 +127,7 @@ const RegisterPage = () => {
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-medium"
                     >
-                        Register
+                        {loading ? <SpinnerLogin /> : <span>Register</span>}
                     </button>
                 </form>
             </div>

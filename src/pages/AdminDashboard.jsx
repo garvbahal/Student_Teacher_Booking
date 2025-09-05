@@ -9,10 +9,12 @@ import {
     deleteDoc,
     doc,
 } from "firebase/firestore";
+import Spinner from "../components/Spinner";
 
 const AdminDashboard = () => {
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
+    const [spinner, setSpinner] = useState(false);
 
     // ✅ Fetch Teachers
     const fetchTeachers = async () => {
@@ -54,61 +56,75 @@ const AdminDashboard = () => {
     };
 
     useEffect(() => {
-        fetchTeachers();
-        fetchStudents();
+        const fetchData = async () => {
+            setSpinner(true);
+            await Promise.all([fetchStudents(), fetchTeachers()]);
+            setSpinner(false);
+        };
+        fetchData();
     }, []);
 
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
-            <LogoutButton />
+            {spinner ? (
+                <Spinner />
+            ) : (
+                <>
+                    <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
+                    <LogoutButton />
 
-            {/* Teachers Section */}
-            <h3 className="text-xl font-semibold mt-6 mb-2">All Teachers</h3>
-            <ul className="space-y-2">
-                {teachers.length === 0 ? (
-                    <li>No teachers found</li>
-                ) : (
-                    teachers.map((teacher) => (
-                        <li
-                            key={teacher.id}
-                            className="flex justify-between items-center p-2 border rounded"
-                        >
-                            {teacher.name} ({teacher.department} -{" "}
-                            {teacher.subject})
-                            <button
-                                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                                onClick={() => handleRemove(teacher.id)}
-                            >
-                                Remove
-                            </button>
-                        </li>
-                    ))
-                )}
-            </ul>
+                    {/* Teachers Section */}
+                    <h3 className="text-xl font-semibold mt-6 mb-2">
+                        All Teachers
+                    </h3>
+                    <ul className="space-y-2">
+                        {teachers.length === 0 ? (
+                            <li>No teachers found</li>
+                        ) : (
+                            teachers.map((teacher) => (
+                                <li
+                                    key={teacher.id}
+                                    className="flex justify-between items-center p-2 border rounded"
+                                >
+                                    {teacher.name} ({teacher.department} -{" "}
+                                    {teacher.subject})
+                                    <button
+                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                        onClick={() => handleRemove(teacher.id)}
+                                    >
+                                        Remove
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </ul>
 
-            {/* Students Section */}
-            <h3 className="text-xl font-semibold mt-6 mb-2">All Students</h3>
-            <ul className="space-y-2">
-                {students.length === 0 ? (
-                    <li>No students found</li>
-                ) : (
-                    students.map((student) => (
-                        <li
-                            key={student.id}
-                            className="flex justify-between items-center p-2 border rounded"
-                        >
-                            {student.name} ({student.email})
-                            <button
-                                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                                onClick={() => handleRemove(student.id)}
-                            >
-                                Remove
-                            </button>
-                        </li>
-                    ))
-                )}
-            </ul>
+                    {/* Students Section */}
+                    <h3 className="text-xl font-semibold mt-6 mb-2">
+                        All Students
+                    </h3>
+                    <ul className="space-y-2">
+                        {students.length === 0 ? (
+                            <li>No students found</li>
+                        ) : (
+                            students.map((student) => (
+                                <li
+                                    key={student.id}
+                                    className="flex justify-between items-center p-2 border rounded"
+                                >
+                                    {student.name} ({student.email})
+                                    <button
+                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                        onClick={() => handleRemove(student.id)}
+                                    >
+                                        Remove
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </>
+            )}
         </div>
     );
 };

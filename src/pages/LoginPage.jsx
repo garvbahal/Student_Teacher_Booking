@@ -4,15 +4,18 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import { doc } from "firebase/firestore";
 import { getDoc } from "firebase/firestore";
+import SpinnerLogin from "../components/SpinnerLogin";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             // Firebase auth Login
             const userCredential = await signInWithEmailAndPassword(
@@ -35,6 +38,8 @@ const LoginPage = () => {
             }
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -74,7 +79,7 @@ const LoginPage = () => {
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition"
                     >
-                        Login
+                        {loading ? <SpinnerLogin /> : <span>Login</span>}
                     </button>
                 </form>
 

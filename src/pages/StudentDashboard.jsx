@@ -11,16 +11,19 @@ import {
 } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { NavLink } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 const StudentDashboard = () => {
-    const [user] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [appointments, setAppointments] = useState([]);
-    const [dataLoading, setDataLoading] = useState(true);
+    const [spinner, setSpinner] = useState(false);
 
     useEffect(() => {
+        if (loading) return;
+        if (!user) return;
         const fetchAppointments = async () => {
-            if (!user) return;
-            setDataLoading(true);
+            // if (!user) return;
+            setSpinner(true);
             try {
                 const q = query(
                     collection(db, "appointments"),
@@ -66,14 +69,14 @@ const StudentDashboard = () => {
             } catch (err) {
                 console.error("Error fetching appointments:", err);
             } finally {
-                setDataLoading(false);
+                setSpinner(false);
             }
         };
         fetchAppointments();
-    }, [user]);
+    }, [user, loading]);
 
-    if (dataLoading) {
-        return <div>Loading user...</div>;
+    if (loading || spinner) {
+        return <Spinner />;
     }
 
     return (
